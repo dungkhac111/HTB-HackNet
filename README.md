@@ -27,7 +27,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel```
 
 **Môi trường**: Web app sử dụng Django.
 
-**Khó khăn**: Django Template Language (DTL) mặc định không cho phép thực thi code Python tùy ý (ví dụ: bạn không thể chạy {{ 7*7 }} hay {{ os.system('id') }} như Jinja2). Nó chỉ cho phép truy xuất các biến (variables) đã được lập trình viên truyền vào context (ngữ cảnh) của trang web. Ý tưởng khai thác: Trang /likes/<post_id> render danh sách người đã like bằng <img title="username">. Nếu username của mình là chuỗi template {{ users.values }}, khi Django render, biến users (QuerySet các user đã like) sẽ được in vào title. Do DTL autoescape, không RCE, nhưng toàn bộ record trong QuerySet (email/username/password/...) lộ ra dưới dạng chuỗi trong title (HTML-escaped). Khi unescape title cuối cùng trong /likes/<id>, sẽ thấy QuerySet chứa dữ liệu nhạy cảm của tất cả user đã like bài đó.
+**Khó khăn**: Django Template Language (DTL) mặc định không cho phép thực thi code Python tùy ý (ví dụ: bạn không thể chạy {{ 7*7 }} hay {{ os.system('id') }} như Jinja2). Nó chỉ cho phép truy xuất các biến (variables) đã được lập trình viên truyền vào context (ngữ cảnh) của trang web. Ý tưởng khai thác: Trang /likes/<post_id> render danh sách người đã like bằng '<img title="username">'. Nếu username của mình là chuỗi template {{ users.values }}, khi Django render, biến users (QuerySet các user đã like) sẽ được in vào title. Do DTL autoescape, không RCE, nhưng toàn bộ record trong QuerySet (email/username/password/...) lộ ra dưới dạng chuỗi trong title (HTML-escaped). Khi unescape title cuối cùng trong /likes/<id>, sẽ thấy QuerySet chứa dữ liệu nhạy cảm của tất cả user đã like bài đó.
 
 ### Đăng nhập và đổi username thành payload
 
