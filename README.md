@@ -14,7 +14,8 @@ PORT   STATE SERVICE VERSION
 80/tcp open  http    nginx 1.22.1
 |_http-server-header: nginx/1.22.1
 |_http-title: Did not follow redirect to <http://hacknet.htb/>
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel```
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+```
 
 ### Web Enumeration
 
